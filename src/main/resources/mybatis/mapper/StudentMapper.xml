@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cy.homework.mapper.StudentMapper">
+    <select id="findStudent" resultType="com.cy.homework.vo.StudentClazzVO">
+        select s.*,cz.clazz_name as clazz from
+        (student s
+        LEFT JOIN clazzstudent cs
+        ON s.username = cs.student_id
+        LEFT JOIN  clazz cz
+        ON cz.clazz_id = cs.clazz_id)
+        where 0 = 0
+        <if test="clazz!=null and clazz!=''">
+            and cz.clazz_id = #{clazz}
+        </if>
+        <if test="username!=null and username!=''">
+            and username like concat('%' #{username} '%')
+        </if>
+        <if test="name!=null and name!=''">
+            and name like concat('%' #{name} '%')
+        </if>
+        GROUP BY s.id
+    </select>
+
+    <update id="resetPasswrod">
+        update student
+        set password = #{password}
+        where username = #{username}
+    </update>
+</mapper>

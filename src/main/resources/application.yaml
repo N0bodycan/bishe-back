@@ -1,0 +1,59 @@
+spring:
+  application:
+    name: homework_back
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/hmss?characterEncoding=UTF-8
+    username: root
+    password: 1585
+
+  mvc:
+    throw-exception-if-no-handler-found: true
+
+  web:
+    resources:
+      static-locations: classpath:/static/
+
+
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 100MB
+
+#  redis:
+#    host: 127.0.0.1
+#    port: 6379
+#    password:
+#    database: 0
+#    lettuce:
+#      shutdown-timeout: 200ms
+#      pool:
+#        max-active: 7
+#        max-idle: 7
+#        min-idle: 2
+#        max-wait: -1ms
+#        required: true
+
+# Mybatis配置
+mybatis-plus:
+  #  config-location: classpath:mybatis/mybatis-config.xml
+  mapper-locations: classpath:mybatis/mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+
+krest:
+  jwt:
+    expire-time: 20m
+    #↑token过期时间，默认20分钟
+    refresh-time-before-expire: 5m
+    #↑过期前多久更新token。默认10分钟。若设为与expire-time一致，则每次请求都会刷新。
+
+file:
+  upload:
+    path: E:/Project/bishe/homework/upload/pic/
+  base_picture_url: http://localhost:8080/static/image/
+
+

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cy.homework.mapper.CourseVOMapper">
+
+    <select id="findCoursePage" resultType="com.cy.homework.vo.CourseVO">
+        SELECT * FROM
+        (SELECT c.id,c.name,c.score,GROUP_CONCAT(distinct convert(t.`name`, CHAR) SEPARATOR ',') AS teachers FROM `course` c
+        LEFT JOIN teacher t
+        ON c.`name` = t.title
+        GROUP BY c.id) cs
+        WHERE 0=0
+        <if test="name!=null and name!=''">
+            and cs.name like concat('%' #{name} '%')
+        </if>
+        <if test="teachername!=null and teachername!=''">
+            and cs.teachers like concat('%' #{teachername} '%')
+        </if>
+    </select>
+    <select id="findClazzCoursePage" resultType="com.cy.homework.vo.CourseVO">
+        SELECT * FROM
+            (SELECT co.*,GROUP_CONCAT(distinct convert(t.`name`, CHAR) SEPARATOR ',') AS teachers FROM course co
+            LEFT JOIN clazz c
+             ON co.id = c.course_id
+             LEFT JOIN teacher t
+             ON c.teacher_id = t.username
+             WHERE c.clazz_id = #{clazz}
+             GROUP BY c.course_id) cinfo
+        WHERE 0=0
+        <if test="name!=null and name!=''">
+            and cinfo.name like concat('%' #{name} '%')
+        </if>
+        <if test="teachername!=null and teachername!=''">
+            and cinfo.teachers like concat('%' #{teachername} '%')
+        </if>
+    </select>
+</mapper>

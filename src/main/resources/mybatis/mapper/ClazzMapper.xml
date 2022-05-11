@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cy.homework.mapper.ClazzMapper">
+    <select id="findClazz" resultType="com.cy.homework.vo.ClazzVO">
+        SELECT clazz_id,clazz_name FROM `clazz`
+        <if test="clazzName!=null and clazzName!=''">
+            where clazz_name like concat('%' #{clazzName} '%')
+        </if>
+        GROUP BY clazz_id
+    </select>
+
+    <update id="pullClazzTeacher">
+        update clazz
+        set teacher_id = null
+        where clazz_id = #{clazz}
+        and teacher_id = #{username}
+    </update>
+</mapper>
