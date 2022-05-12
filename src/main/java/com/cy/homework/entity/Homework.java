@@ -17,11 +17,14 @@ public class Homework {
 
     @TableId(value = "id",type = IdType.AUTO)
     private Integer id;
-    private Clazz clazz;
+    private String course;
+    private String clazzId;
+    private String teacherId;
     private Date stime;
     private Date etime;
-    private int type;
+    private Integer type;
     private String filename;
     private String text;
     private int state;
+
 }

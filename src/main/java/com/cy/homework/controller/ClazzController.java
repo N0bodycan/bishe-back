@@ -2,6 +2,7 @@ package com.cy.homework.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.cy.homework.common.Result;
+import com.cy.homework.dto.ClazzDTO;
 import com.cy.homework.dto.CourseTeacherDTO;
 import com.cy.homework.entity.Clazz;
 import com.cy.homework.mapper.ClazzMapper;
@@ -48,6 +49,17 @@ public class ClazzController {
             return Result.OK("删除成功!");
         }else {
             return Result.error("删除失败！");
+        }
+    }
+
+    @PutMapping("/admin/clazzm/add")
+    public Result<?> addClazz(@RequestBody ClazzDTO clazzDTO){
+        Clazz clazz = new Clazz().setClazzId(clazzDTO.getClazzId()).setClazzName(clazzDTO.getClazzName());
+        int insert = clazzMapper.insert(clazz);
+        if (insert>0){
+            return Result.OK("添加成功");
+        }else {
+            return Result.error(400,"添加失败！");
         }
     }
 }

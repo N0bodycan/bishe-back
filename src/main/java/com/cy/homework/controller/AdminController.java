@@ -73,7 +73,6 @@ public class AdminController {
                 JwtUser jwtUser=new JwtUser(user.getUsername(), Arrays.asList("admin"));
                 res.put("token", KrestUtil.createJwtTokenByUser(jwtUser));
                 //↑ 关键是这一步，将token返回给客户端以供后续请求时验证身份。
-//                String s = JSON.toJSONString(res);
                 res.put("code", 1);
                 res.put("message","login success");
                 res.put("name",name);

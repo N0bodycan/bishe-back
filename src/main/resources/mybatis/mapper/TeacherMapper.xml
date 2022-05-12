@@ -25,7 +25,7 @@
         ON c.teacher_id = t.username
         WHERE 0 = 0
         <if test="clazz!=null and clazz!=''">
-            and c.clazz_id = 201801
+            and c.clazz_id = #{clazz}
         </if>
         <if test="username!=null and username!=''">
             and t.username like concat('%' #{username} '%')

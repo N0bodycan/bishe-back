@@ -53,7 +53,10 @@ krest:
 
 file:
   upload:
-    path: E:/Project/bishe/homework/upload/pic/
-  base_picture_url: http://localhost:8080/static/image/
+    pic:
+      path: E:/Project/bishe/homework/upload/pic/
+      base_picture_url: http://localhost:8080/static/image/
 
-
+    file:
+      path: E:/Project/bishe/homework/upload/file/
+      base_file_url: http://localhost:8080/static/file/

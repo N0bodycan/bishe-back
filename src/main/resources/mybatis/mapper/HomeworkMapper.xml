@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cy.homework.mapper.HomeworkMapper">
+
+    <select id="findHomework" resultType="com.cy.homework.entity.Homework">
+        select * from homework
+        where teacher_id =#{teacherId}
+        <if test="clazzId!=null and clazzId!=''">
+            and clazz_id = #{clazzId}
+        </if>
+        <if test="type!=null and type!=''">
+            and type = #{type}
+        </if>
+    </select>
+</mapper>

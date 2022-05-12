@@ -10,8 +10,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class MvcConfig implements WebMvcConfigurer {
-    /**上传地址*/
-    @Value("${file.upload.path}")
+    /**上传图片地址*/
+    @Value("${file.upload.pic.path}")
+    private String picPath;
+
+    /**上传文件地址*/
+    @Value("${file.upload.file.path}")
     private String filePath;
 
     @Bean
@@ -28,7 +32,8 @@ public class MvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/static/image/**").addResourceLocations("file:/" + filePath);
+        registry.addResourceHandler("/static/image/**").addResourceLocations("file:/" + picPath);
+        registry.addResourceHandler("/static/file/**").addResourceLocations("file:/" + filePath);
     }
 
 }
