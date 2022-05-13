@@ -14,4 +14,47 @@
             and type = #{type}
         </if>
     </select>
+    <select id="findStudentHomework" resultType="com.cy.homework.entity.Homework">
+        SELECT h.id,h.course,h.clazz_id,t.name AS teacher_id,h.stime,h.etime,h.type,h.filename,h.text,h.state FROM `homework` h
+       LEFT JOIN clazz cl
+                 ON h.clazz_id = cl.clazz_id
+       LEFT JOIN clazzstudent cs
+                 ON cl.clazz_id = cs.clazz_id
+       LEFT JOIN student s
+                 ON cs.student_id = s.username
+       LEFT JOIN teacher t
+                 ON h.teacher_id = t.username
+        WHERE s.username = #{studentId}
+          and h.etime &gt; NOW()
+        AND #{studentId} NOT IN
+        (SELECT hf.student_id FROM homeworkinfo hf
+        WHERE hf.homework_id = h.id AND hf.student_id =  #{studentId})
+        <if test="course!=null and course!=''">
+            and h.course like concat('%' #{course} '%')
+        </if>
+        <if test="teacherName!=null and teacherName!=''">
+            and t.name like concat('%' #{teacherName} '%')
+        </if>
+        GROUP BY h.id
+    </select>
+    <select id="findStudentHistoryHomework" resultType="com.cy.homework.entity.Homework">
+        SELECT h.id,h.course,h.clazz_id,t.name AS teacher_id,h.stime,h.etime,h.type,h.filename,h.text,h.state FROM `homework` h
+        LEFT JOIN clazz cl
+        ON h.clazz_id = cl.clazz_id
+        LEFT JOIN clazzstudent cs
+        ON cl.clazz_id = cs.clazz_id
+        LEFT JOIN student s
+        ON cs.student_id = s.username
+        LEFT JOIN teacher t
+        ON h.teacher_id = t.username
+        WHERE s.username = #{studentId}
+        and h.etime &lt; NOW()
+        <if test="course!=null and course!=''">
+            and h.course like concat('%' #{course} '%')
+        </if>
+        <if test="teacherName!=null and teacherName!=''">
+            and t.name like concat('%' #{teacherName} '%')
+        </if>
+        GROUP BY h.id
+    </select>
 </mapper>

@@ -27,7 +27,8 @@ public class MvcConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/student/login")
                 .excludePathPatterns("/teacher/login")
                 .excludePathPatterns("/admin/login")
-                .excludePathPatterns("/static/image/**");
+                .excludePathPatterns("/static/image/**")
+                .excludePathPatterns("/static/file/**");
     }
 
     @Override

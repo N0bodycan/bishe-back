@@ -35,6 +35,7 @@ public class ShiroJWTConfig implements KrestConfigurer {
     public void configFilterChainDefinitionMap(Map<String, String> filterRuleMap) {
         //配置不参与token验证的uri
         filterRuleMap.put("/static/image/*", "anon");
+        filterRuleMap.put("/static/file/*", "anon");
         filterRuleMap.put("/admin/login", "anon");
         filterRuleMap.put("/student/login", "anon");
         filterRuleMap.put("/teacher/login", "anon");

@@ -11,4 +11,8 @@ import org.apache.ibatis.annotations.Param;
 public interface HomeworkMapper extends BaseMapper<Homework> {
 
     IPage<Homework> findHomework(IPage<Homework> page, @Param("clazzId")String clazzId, @Param("type")String type, @Param("teacherId")String teacherId);
+
+    IPage<Homework> findStudentHomework(IPage<Homework> page, @Param("course")String course, @Param("teacherName")String teacherName, @Param("studentId")String studentId);
+
+    IPage<Homework> findStudentHistoryHomework(IPage<Homework> page, @Param("course")String course, @Param("teacherName")String teacherName, @Param("studentId")String studentId);
 }

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cy.homework.mapper.HomeworkInfoMapper">
+
+    <select id="findCommitHomework" resultType="com.cy.homework.vo.HomeworkInfoVO">
+        SELECT hf.id,hf.homework_id,h.course,t.name AS teacher_id,h.stime,h.etime,h.type,h.text,hf.filename,hf.info FROM `homeworkinfo` hf
+         LEFT JOIN homework h
+                   ON hf.homework_id = h.id
+         LEFT JOIN teacher t
+                   ON t.username = h.teacher_id
+        WHERE hf.student_id = #{studentId}
+    </select>
+    <select id="findStudentHomework" resultType="com.cy.homework.entity.HomeworkInfo">
+        SELECT hf.id,hf.homework_id,s.name as student_id,hf.type,hf.filename,hf.text,hf.info,hf.pinyu,hf.score,hf.state FROM homeworkinfo hf
+        LEFT JOIN homework h
+                  ON hf.homework_id = h.id
+        LEFT JOIN student s
+                  ON s.username = hf.student_id
+        WHERE h.teacher_id = #{teacherId}
+        <if test="homeworkId!=null and homeworkId!=''">
+            AND hf.homework_id = #{homeworkId}
+        </if>
+        <if test="studentName!=null and studentName!=''">
+            AND s.name like concat('%' #{studentName} '%')
+        </if>
+    </select>
+    <select id="findCommentHomework" resultType="com.cy.homework.vo.CommentVO">
+        SELECT hf.id,hf.homework_id,t.name AS teacher_name,h.course,hf.type,hf.filename,hf.text,hf.info,hf.pinyu,hf.score FROM homeworkinfo hf
+       LEFT JOIN homework h
+                 ON hf.homework_id = h.id
+       LEFT JOIN teacher t
+                 ON h.teacher_id = t.username
+        WHERE hf.student_id = #{studentId}
+          AND hf.state = 1
+        <if test="course!=null and course!=''">
+            and h.course like concat('%' #{course} '%')
+        </if>
+        <if test="homeworkId!=null and homeworkId!=''">
+            and homework_id = #{homeworkId}
+        </if>
+
+    </select>
+</mapper>

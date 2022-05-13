@@ -1,29 +1,28 @@
-package com.cy.homework.entity;
+package com.cy.homework.vo;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
+import java.util.Date;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
-@TableName("homeworkinfo")
-public class HomeworkInfo {
+public class HomeworkInfoVO {
 
-    @TableId(value = "id",type = IdType.AUTO)
     private Integer id;
     private String homeworkId;
-    private String studentId;
+    private String course;
+    private String teacherId;
+    private Date stime;
+    private Date etime;
     private int type;
     private String filename;
     private String text;
     private String info;
     private String pinyu;
     private int score;
-    private int state;
 }

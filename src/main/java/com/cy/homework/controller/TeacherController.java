@@ -8,7 +8,9 @@ import com.chenkaiwei.krest.KrestUtil;
 import com.chenkaiwei.krest.entity.JwtUser;
 import com.cy.homework.common.Result;
 import com.cy.homework.entity.Homework;
+import com.cy.homework.entity.HomeworkInfo;
 import com.cy.homework.entity.Teacher;
+import com.cy.homework.mapper.HomeworkInfoMapper;
 import com.cy.homework.mapper.HomeworkMapper;
 import com.cy.homework.mapper.TeacherMapper;
 import com.cy.homework.service.TeacherService;
@@ -18,7 +20,9 @@ import com.cy.homework.vo.UserVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.xml.crypto.Data;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,6 +38,9 @@ public class TeacherController {
 
     @Autowired
     HomeworkMapper homeworkMapper;
+
+    @Autowired
+    HomeworkInfoMapper homeworkInfoMapper;
 
     @PostMapping("/login")
     public Result<?> login(@RequestBody UserVO userInput) throws Exception {
@@ -89,6 +96,9 @@ public class TeacherController {
 
     @PutMapping("/publish")
     public Result<?> publishHomework(@RequestBody Homework homework){
+        if (homework.getStime().before(new Date())){
+            homework.setState(1);
+        }
 //        System.out.println(homework);
         int insert = homeworkMapper.insert(homework);
         if (insert>0 ){
@@ -139,6 +149,36 @@ public class TeacherController {
         return Result.OK(map);
     }
 
+    @GetMapping("/studenthomework/page")
+    public Result<?> getStudentHomeworkPage(@RequestParam("size")Integer size,
+                                    @RequestParam(value = "homeworkId",required = false)String homeworkId,
+                                    @RequestParam(value = "studentName",required = false)String studentName,
+                                    @RequestParam(value = "teacherId")String teacherId){
+        Map map = new HashMap();
+        Page<HomeworkInfo> page = new Page<>(1,size);
+        IPage<HomeworkInfo> homeworks = homeworkInfoMapper.findStudentHomework(page, homeworkId, studentName,teacherId);
+        map.put("data",homeworks.getRecords());
+//        System.out.println(studentpage.getRecords());
+        map.put("total", homeworks.getTotal());
+
+        return Result.OK(map);
+    };
+
+    @GetMapping("/studenthomework/page/{index}")
+    public Result<?> getStudentHomeworkPageIndex(@PathVariable("index") Integer index,
+                                                 @RequestParam(value = "homeworkId",required = false)String homeworkId,
+                                                 @RequestParam(value = "studentName",required = false)String studentName,
+                                                 @RequestParam(value = "teacherId")String teacherId){
+        Map map = new HashMap();
+        Page<HomeworkInfo> page = new Page<>(index,5);
+        IPage<HomeworkInfo> homeworks = homeworkInfoMapper.findStudentHomework(page, homeworkId, studentName,teacherId);
+//        System.out.println(homeworks.getRecords());
+        map.put("data",homeworks.getRecords());
+        map.put("total", homeworks.getTotal());
+        return Result.OK(map);
+    }
+
+
     @DeleteMapping("/homework/{homeworkId}")
     public Result<?> delete(@PathVariable("homeworkId")Integer homeworkId){
         int i = homeworkMapper.deleteById(homeworkId);
@@ -146,6 +186,16 @@ public class TeacherController {
             return Result.OK("删除成功！");
         }else {
             return Result.error(400,"删除失败！");
+        }
+    }
+
+    @PutMapping("/comment")
+    public Result<?> comment(@RequestBody HomeworkInfo homeworkInfo){
+        int i = homeworkInfoMapper.updateById(homeworkInfo);
+        if (i>0){
+            return Result.OK("评阅成功！");
+        }else {
+            return Result.error(400,"评阅失败！");
         }
     }
 }
