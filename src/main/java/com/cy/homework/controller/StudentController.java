@@ -2,17 +2,21 @@ package com.cy.homework.controller;
 
 
 import cn.hutool.crypto.SecureUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.chenkaiwei.krest.KrestUtil;
 import com.chenkaiwei.krest.entity.JwtUser;
 import com.cy.homework.common.Result;
+import com.cy.homework.dto.PwdDTO;
 import com.cy.homework.entity.Homework;
 import com.cy.homework.entity.HomeworkInfo;
 import com.cy.homework.entity.Student;
+import com.cy.homework.entity.Teacher;
 import com.cy.homework.mapper.HomeworkInfoMapper;
 import com.cy.homework.mapper.HomeworkMapper;
+import com.cy.homework.mapper.StudentMapper;
 import com.cy.homework.service.StudentService;
 import com.cy.homework.vo.CommentVO;
 import com.cy.homework.vo.HomeworkInfoVO;
@@ -32,6 +36,9 @@ public class StudentController {
 
     @Autowired
     StudentService studentService;
+
+    @Autowired
+    StudentMapper studentMapper;
 
     @Autowired
     HomeworkMapper homeworkMapper;
@@ -71,6 +78,27 @@ public class StudentController {
             // throw new KrestAuthenticationException("登录失败");
         }
         return Result.OK(res);
+    }
+
+    @PostMapping("/changepwd")
+    public Result<?> changepwd(@RequestBody PwdDTO pwdDTO){
+        String op = SecureUtil.md5(pwdDTO.getOp());
+        QueryWrapper<Student> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("username",pwdDTO.getId());
+        Student student = studentMapper.selectOne(queryWrapper);
+        if (!student.getPassword().equals(op)){
+            return Result.error(400,"原密码错误");
+        }else{
+            UpdateWrapper<Student> updateWrapper = new UpdateWrapper<>();
+            updateWrapper.eq("username", pwdDTO.getId());
+            Student s = new Student().setPassword(SecureUtil.md5(pwdDTO.getNp()));
+            int update = studentMapper.update(s, updateWrapper);
+            if (update>0){
+                return Result.OK("修改密码成功！请重新登录",null);
+            }else {
+                return Result.error("未知错误！");
+            }
+        }
     }
 
     @GetMapping("/homework/page")

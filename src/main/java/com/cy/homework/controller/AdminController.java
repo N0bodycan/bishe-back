@@ -11,14 +11,9 @@ import com.chenkaiwei.krest.entity.JwtUser;
 
 import com.chenkaiwei.krest.exceptions.KrestTokenException;
 import com.cy.homework.common.Result;
-import com.cy.homework.entity.Clazz;
-import com.cy.homework.entity.ClazzStudent;
-import com.cy.homework.entity.Student;
-import com.cy.homework.entity.Teacher;
-import com.cy.homework.mapper.ClazzMapper;
-import com.cy.homework.mapper.ClazzStudentMapper;
-import com.cy.homework.mapper.StudentMapper;
-import com.cy.homework.mapper.TeacherMapper;
+import com.cy.homework.dto.PwdDTO;
+import com.cy.homework.entity.*;
+import com.cy.homework.mapper.*;
 import com.cy.homework.service.AdminService;
 import com.cy.homework.service.ClazzService;
 import com.cy.homework.service.StudentService;
@@ -37,6 +32,9 @@ import java.util.Map;
 @RestController
 @RequestMapping("admin")
 public class AdminController {
+    @Autowired
+    AdminMapper adminMapper;
+
     @Autowired
     AdminService adminService;
 
@@ -92,6 +90,27 @@ public class AdminController {
             // throw new KrestAuthenticationException("登录失败");
         }
         return Result.OK(res);
+    }
+
+    @PostMapping("/changepwd")
+    public Result<?> changepwd(@RequestBody PwdDTO pwdDTO){
+        String op = SecureUtil.md5(pwdDTO.getOp());
+        QueryWrapper<Admin> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("username",pwdDTO.getId());
+        Admin admin = adminMapper.selectOne(queryWrapper);
+        if (!admin.getPassword().equals(op)){
+            return Result.error(400,"原密码错误");
+        }else{
+            UpdateWrapper<Admin> updateWrapper = new UpdateWrapper<>();
+            updateWrapper.eq("username", pwdDTO.getId());
+            Admin a = new Admin().setPassword(SecureUtil.md5(pwdDTO.getNp()));
+            int update = adminMapper.update(a, updateWrapper);
+            if (update>0){
+                return Result.OK("修改密码成功！请重新登录",null);
+            }else {
+                return Result.error("未知错误！");
+            }
+        }
     }
 
     @GetMapping

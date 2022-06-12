@@ -46,7 +46,7 @@ mybatis-plus:
 
 krest:
   jwt:
-    expire-time: 20m
+    expire-time: 60m
     #↑token过期时间，默认20分钟
     refresh-time-before-expire: 5m
     #↑过期前多久更新token。默认10分钟。若设为与expire-time一致，则每次请求都会刷新。

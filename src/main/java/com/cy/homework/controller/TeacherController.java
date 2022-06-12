@@ -2,11 +2,13 @@ package com.cy.homework.controller;
 
 import cn.hutool.crypto.SecureUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.chenkaiwei.krest.KrestUtil;
 import com.chenkaiwei.krest.entity.JwtUser;
 import com.cy.homework.common.Result;
+import com.cy.homework.dto.PwdDTO;
 import com.cy.homework.entity.Homework;
 import com.cy.homework.entity.HomeworkInfo;
 import com.cy.homework.entity.Teacher;
@@ -74,6 +76,27 @@ public class TeacherController {
             // throw new KrestAuthenticationException("登录失败");
         }
         return Result.OK(res);
+    }
+
+    @PostMapping("/changepwd")
+    public Result<?> changepwd(@RequestBody PwdDTO pwdDTO){
+        String op = SecureUtil.md5(pwdDTO.getOp());
+        QueryWrapper<Teacher> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("username",pwdDTO.getId());
+        Teacher teacher = teacherMapper.selectOne(queryWrapper);
+        if (!teacher.getPassword().equals(op)){
+            return Result.error(400,"原密码错误");
+        }else{
+            UpdateWrapper<Teacher> updateWrapper = new UpdateWrapper<>();
+            updateWrapper.eq("username", pwdDTO.getId());
+            Teacher t = new Teacher().setPassword(SecureUtil.md5(pwdDTO.getNp()));
+            int update = teacherMapper.update(t, updateWrapper);
+            if (update>0){
+                return Result.OK("修改密码成功！请重新登录",null);
+            }else {
+                return Result.error("未知错误！");
+            }
+        }
     }
 
     @GetMapping
